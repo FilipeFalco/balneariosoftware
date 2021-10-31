@@ -5,9 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Date;
+
+import static javax.persistence.GenerationType.SEQUENCE;
 
 @Getter
 @Setter
@@ -18,21 +22,29 @@ import java.util.Date;
 public class Funcionario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(
+            name = "funcionario_sequence",
+            sequenceName = "funcionario_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = SEQUENCE,
+            generator = "funcionario_sequence"
+    )
     private Long id;
 
-    @NotNull
+    @Column(nullable = false, columnDefinition = "VARCHAR(16)")
     private String password;
 
-    @NotNull
-    @Column(unique = true, name = "usuario")
+    @Column(unique = true, nullable = false, columnDefinition = "BIGINT")
     private Long usuarioId;
 
-    private Date created_at;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @Column(insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private Date created_at = new Timestamp((new Date()).getTime());
 
     private Date update_at;
 
-    private String updated_by;
-
-    private Boolean liberador_acesso;
+    @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private Boolean liberador_acesso = Boolean.FALSE;
 }

@@ -10,6 +10,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface FuncionarioRepository extends JpaRepository<Funcionario, Long> {
 
-    @Query("SELECT u FROM User u WHERE u.id = :id")
-    public User findFuncionarioUser(@Param("id") Long id);
 }

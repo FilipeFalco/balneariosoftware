@@ -4,9 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Date;
+
+import static javax.persistence.GenerationType.SEQUENCE;
 
 @Getter
 @Setter
@@ -17,20 +21,41 @@ import java.util.Date;
 public class Carteirinha {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(
+            name = "id_carteirinha_table",
+            sequenceName = "id_carteirinha_table",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = SEQUENCE,
+            generator = "id_carteirinha_table"
+    )
     private Long id;
 
+    @SequenceGenerator(
+            name = "id_carteirinha",
+            sequenceName = "id_carteirinha",
+            allocationSize = 10000000
+    )
+    @GeneratedValue(
+            strategy = SEQUENCE,
+            generator = "id_carteirinha"
+    )
     private String id_carteirinha;
 
-    private Date created_at;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @Column(insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private Date created_at = new Timestamp((new Date()).getTime());
 
     private Date update_at;
 
-    @OneToOne
-    @JoinColumn(name = "id", nullable = false)
-    private User associado;
+    @Column(unique = true, nullable = false, columnDefinition = "BIGINT")
+    private String associadoId;
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @Column(nullable = false)
     private Date data_emissao;
 
-    private Boolean ativo;
+    @Column(columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private Boolean ativo = Boolean.TRUE;
 }

@@ -12,5 +12,9 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE u.id > :id")
-    public List<User> findAllMoreThan(@Param("id") Long id);
+    List<User> findAllMoreThan(@Param("id") Long id);
+
+    @Query("SELECT u FROM User u WHERE u.cpf = ?1")
+    User findCpf(String cpf);
+
 }

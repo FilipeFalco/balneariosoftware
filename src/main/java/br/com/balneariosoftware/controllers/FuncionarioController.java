@@ -5,6 +5,7 @@ import br.com.balneariosoftware.exception.ValueOnInsertNotFound;
 import br.com.balneariosoftware.model.Funcionario;
 import br.com.balneariosoftware.model.User;
 import br.com.balneariosoftware.repository.FuncionarioRepository;
+import br.com.balneariosoftware.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,8 @@ public class FuncionarioController {
 
     @Autowired
     private FuncionarioRepository funcionarioRepository;
+
+    private UserRepository userRepository;
 
 
     @GetMapping("/{id}")
@@ -37,9 +40,10 @@ public class FuncionarioController {
     public Funcionario funcionario(@RequestBody Funcionario funcionario) {
         funcionario.setCreated_at(new Date());
 
-        User verificaExiste = funcionarioRepository.findFuncionarioUser(funcionario.getUsuarioId());
+        try {
+            Optional<User> verificaExiste = userRepository.findById(funcionario.getUsuarioId());
 
-        if(verificaExiste == null) {
+        } catch (Exception e) {
             throw new ValueOnInsertNotFound("Usuário não foi encontrado");
         }
 
