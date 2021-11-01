@@ -1,9 +1,7 @@
 package br.com.balneariosoftware.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.GenerationTime;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -32,15 +30,7 @@ public class Carteirinha {
     )
     private Long id;
 
-    @SequenceGenerator(
-            name = "id_carteirinha",
-            sequenceName = "id_carteirinha",
-            allocationSize = 10000000
-    )
-    @GeneratedValue(
-            strategy = SEQUENCE,
-            generator = "id_carteirinha"
-    )
+    @Column(updatable = false, nullable = false)
     private String id_carteirinha;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -50,11 +40,11 @@ public class Carteirinha {
     private Date update_at;
 
     @Column(unique = true, nullable = false, columnDefinition = "BIGINT")
-    private String associadoId;
+    private Long usuarioId;
 
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    @Column(nullable = false)
-    private Date data_emissao;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @Column(insertable = false, updatable = false, columnDefinition = "DATE DEFAULT CURRENT_TIMESTAMP")
+    private Date data_emissao = new Timestamp((new Date()).getTime());
 
     @Column(columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean ativo = Boolean.TRUE;

@@ -31,7 +31,7 @@ public class Reserva {
     private Long id;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    @Column(nullable = false, columnDefinition = "TIMESTAMP")
+    @Column(nullable = false, columnDefinition = "DATE")
     private Date data_reservada;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -39,6 +39,9 @@ public class Reserva {
     private Date created_at = new Timestamp((new Date()).getTime());
 
     private Date update_at;
+
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String local;
 
     @Column(unique = true, nullable = false, columnDefinition = "TEXT")
     private Long autorizadorId;

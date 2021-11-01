@@ -1,5 +1,7 @@
 package br.com.balneariosoftware.controllers;
 
+import br.com.balneariosoftware.exception.LengthPassword;
+import br.com.balneariosoftware.exception.ResourceAlreadyExist;
 import br.com.balneariosoftware.exception.ResourceNotFoundException;
 import br.com.balneariosoftware.exception.ValueOnInsertNotFound;
 import br.com.balneariosoftware.model.Funcionario;
@@ -21,6 +23,7 @@ public class FuncionarioController {
     @Autowired
     private FuncionarioRepository funcionarioRepository;
 
+    @Autowired
     private UserRepository userRepository;
 
 
@@ -28,7 +31,7 @@ public class FuncionarioController {
     public Funcionario funcionario(@PathVariable("id") Long id) {
         Optional<Funcionario> funcionarioFind = this.funcionarioRepository.findById(id);
 
-        if(funcionarioFind.isPresent()) {
+        if (funcionarioFind.isPresent()) {
             throw new ResourceNotFoundException("Funcionário com o " + id + " não foi encontrado");
         }
 
@@ -38,18 +41,28 @@ public class FuncionarioController {
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
     public Funcionario funcionario(@RequestBody Funcionario funcionario) {
-        funcionario.setCreated_at(new Date());
 
-        try {
-            Optional<User> verificaExiste = userRepository.findById(funcionario.getUsuarioId());
+        Funcionario funcionarioEditar = funcionarioRepository.searchFunciorioByUserId(funcionario.getUsuarioId());
+        if(funcionarioEditar != null) {
+            funcionarioEditar.setPassword(funcionario.getPassword());
+            funcionarioEditar.setLiberador_acesso(funcionario.getLiberador_acesso());
 
-        } catch (Exception e) {
+            return this.funcionarioRepository.save(funcionarioEditar);
+        }
+
+        if (!userRepository.existsById(funcionario.getUsuarioId())) {
             throw new ValueOnInsertNotFound("Usuário não foi encontrado");
+        }
+
+
+        if (funcionario.getPassword().length() < 4) {
+            throw new LengthPassword("Senha deve conter no mínimo 4 caracteres");
         }
 
         return this.funcionarioRepository.save(funcionario);
     }
 
+    @GetMapping("/list")
     public List<Funcionario> list() {
         return this.funcionarioRepository.findAll();
     }
