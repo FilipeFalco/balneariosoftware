@@ -31,7 +31,7 @@ public class FuncionarioController {
     public Funcionario funcionario(@PathVariable("id") Long id) {
         Optional<Funcionario> funcionarioFind = this.funcionarioRepository.findById(id);
 
-        if (funcionarioFind.isPresent()) {
+        if (funcionarioFind.isEmpty()) {
             throw new ResourceNotFoundException("Funcionário com o " + id + " não foi encontrado");
         }
 
