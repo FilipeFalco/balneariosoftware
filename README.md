@@ -1,7 +1,7 @@
-#Balneario Software
+# Balneario Software
 API criada para auxilizar balneários com cadastro de associados e suas carteirinhas, funcionários e reservas de locais
 
-##Técnologias utilizadas
+## Técnologias utilizadas
 - Java
 - Postgresql
 
