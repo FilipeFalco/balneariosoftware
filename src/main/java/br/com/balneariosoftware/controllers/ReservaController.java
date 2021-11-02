@@ -89,14 +89,14 @@ public class ReservaController {
     @PostMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void removerReserva(@PathVariable("id") Long id) {
-        Reserva remove = reservaRepository.getById(id);
+        Optional<Reserva> remove = reservaRepository.findById(id);
 
-        if(remove.getId() == null) {
-            throw new ResourceNotFoundException("Id não encontrado");
+        if(remove.isEmpty()) {
+            throw new ResourceNotFoundException("Reserva não encontrada");
         }
 
-        remove.setAtivo(false);
-        reservaRepository.save(remove);
+        remove.get().setAtivo(false);
+        reservaRepository.save(remove.get());
     }
 
     public boolean comparaDatas(Date dataInformada) throws ParseException {
