@@ -66,4 +66,19 @@ public class FuncionarioController {
     public List<Funcionario> list() {
         return this.funcionarioRepository.findAll();
     }
+
+    @PostMapping("/delete/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void removeUser(@PathVariable("id") Long id) {
+        Optional<Funcionario> remove = funcionarioRepository.findById(id);
+
+        if(remove.isEmpty()) {
+            throw new ResourceNotFoundException("Usuário " + id + " não encontrado");
+        }
+
+        Optional<User> removeUser = userRepository.findById(remove.get().getUsuarioId());
+
+        funcionarioRepository.delete(remove.get());
+        userRepository.delete(removeUser.get());
+    }
 }

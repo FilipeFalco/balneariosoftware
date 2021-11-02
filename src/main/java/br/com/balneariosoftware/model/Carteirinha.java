@@ -39,7 +39,7 @@ public class Carteirinha {
 
     private Date update_at;
 
-    @Column(unique = true, nullable = false, columnDefinition = "BIGINT")
+    @Column(nullable = false, columnDefinition = "BIGINT")
     private Long usuarioId;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)

@@ -50,4 +50,16 @@ public class UserController {
     public List<User> list() {
         return this.userRepository.findAll();
     }
+
+    @PostMapping("/delete/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void removeUser(@PathVariable("id") Long id) {
+        Optional<User> remove = userRepository.findById(id);
+
+        if(remove.isEmpty()) {
+            throw new ResourceNotFoundException("Usuário " + id + " não encontrado");
+        }
+
+        userRepository.delete(remove.get());
+    }
 }

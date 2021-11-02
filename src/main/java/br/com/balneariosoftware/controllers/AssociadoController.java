@@ -5,6 +5,8 @@ import br.com.balneariosoftware.exception.ResourceAlreadyExist;
 import br.com.balneariosoftware.exception.ResourceNotFoundException;
 import br.com.balneariosoftware.exception.ValueOnInsertNotFound;
 import br.com.balneariosoftware.model.Associado;
+import br.com.balneariosoftware.model.Funcionario;
+import br.com.balneariosoftware.model.User;
 import br.com.balneariosoftware.repository.AssociadoRepository;
 import br.com.balneariosoftware.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,5 +58,20 @@ public class AssociadoController {
     @GetMapping("/list")
     public List<Associado> list() {
         return this.associadoRepository.findAll();
+    }
+
+    @PostMapping("/delete/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void removeUser(@PathVariable("id") Long id) {
+        Optional<Associado> remove = associadoRepository.findById(id);
+
+        if(remove.isEmpty()) {
+            throw new ResourceNotFoundException("Usuário " + id + " não encontrado");
+        }
+
+        Optional<User> removeUser = userRepository.findById(remove.get().getUsuarioId());
+
+        associadoRepository.delete(remove.get());
+        userRepository.delete(removeUser.get());
     }
 }

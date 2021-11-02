@@ -2,8 +2,11 @@ package br.com.balneariosoftware.controllers;
 
 import br.com.balneariosoftware.exception.*;
 import br.com.balneariosoftware.model.Carteirinha;
+import br.com.balneariosoftware.model.Funcionario;
+import br.com.balneariosoftware.model.User;
 import br.com.balneariosoftware.repository.CarteirinhaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
@@ -55,6 +58,19 @@ public class CarteirinhaController {
 
     @GetMapping("/list")
     public List<Carteirinha> list() {
-        return this.carteirinhaRepository.findAll();
+        return this.carteirinhaRepository.listAllAtivo();
+    }
+
+    @PostMapping("/delete/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void removeUser(@PathVariable("id") Long id) {
+        Carteirinha remove = carteirinhaRepository.getById(id);
+
+        if(remove.getId() == null) {
+            throw new ResourceNotFoundException("Usuário " + id + " não encontrado");
+        }
+
+        remove.setAtivo(false);
+        carteirinhaRepository.save(remove);
     }
 }
