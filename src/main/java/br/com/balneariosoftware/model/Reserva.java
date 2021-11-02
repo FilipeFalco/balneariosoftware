@@ -43,10 +43,10 @@ public class Reserva {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String local;
 
-    @Column(unique = true, nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "TEXT")
     private Long autorizadorId;
 
-    @Column(unique = true, nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "TEXT")
     private Long solicitanteId;
 
     @Column(columnDefinition = "BOOLEAN DEFAULT TRUE")

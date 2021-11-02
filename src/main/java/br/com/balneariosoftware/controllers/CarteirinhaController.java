@@ -32,7 +32,7 @@ public class CarteirinhaController {
     @PostMapping("/")
     public Carteirinha carteirinha(@RequestBody Carteirinha carteirinha) {
         if(carteirinha.getUsuarioId() == null) {
-            throw new userRequired("Usuário é obrigatório");
+            throw new ResourceRequired("Usuário é obrigatório");
         }
 
         if(carteirinhaRepository.associadoJaPossuiCarteirinha(carteirinha.getUsuarioId())) {

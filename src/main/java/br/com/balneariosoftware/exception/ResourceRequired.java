@@ -4,9 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class resourceRequired extends RuntimeException{
+public class ResourceRequired extends RuntimeException{
 
-    public resourceRequired(String message) {
+    public ResourceRequired(String message) {
         super(message);
     }
 }

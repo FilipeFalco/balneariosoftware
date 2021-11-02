@@ -4,9 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-public class userRequired extends RuntimeException{
+public class DateIsBefore extends RuntimeException  {
 
-    public userRequired(String message) {
+    public DateIsBefore (String message) {
         super(message);
     }
 }
