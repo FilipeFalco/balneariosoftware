@@ -51,7 +51,7 @@ public class FuncionarioController {
         }
 
         if (!userRepository.existsById(funcionario.getUsuarioId())) {
-            throw new ValueOnInsertNotFound("Usuário não foi encontrado");
+            throw new ValueOnInsertNotFound("Usuário não " + funcionario.getUsuarioId() + " foi encontrado");
         }
 
 

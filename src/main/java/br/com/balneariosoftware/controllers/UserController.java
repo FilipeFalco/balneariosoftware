@@ -1,8 +1,9 @@
 package br.com.balneariosoftware.controllers;
 
+import br.com.balneariosoftware.exception.ResourceAlreadyExist;
 import br.com.balneariosoftware.exception.ResourceNotFoundException;
-import br.com.balneariosoftware.model.User;
-import br.com.balneariosoftware.repository.UserRepository;
+import br.com.balneariosoftware.model.*;
+import br.com.balneariosoftware.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -15,8 +16,21 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/users")
 public class UserController {
+
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private AssociadoRepository associadoRepository;
+
+    @Autowired
+    private FuncionarioRepository funcionarioRepository;
+
+    @Autowired
+    private CarteirinhaRepository carteirinhaRepository;
+
+    @Autowired
+    private ReservaRepository reservaRepository;
 
     @GetMapping("/{id}")
     public User user(@PathVariable("id") Long id) {
@@ -42,6 +56,15 @@ public class UserController {
 
             return this.userRepository.save(userFind);
         } else {
+
+            if(userRepository.searchUsername(user.getUsername())) {
+                throw new ResourceAlreadyExist("Username ja esta em uso!");
+            }
+
+            if(userRepository.searchEmail(user.getEmail())) {
+                throw new ResourceAlreadyExist("Email ja esta registrado!");
+            }
+
             return this.userRepository.save(user);
         }
     }
@@ -58,6 +81,34 @@ public class UserController {
 
         if(remove.isEmpty()) {
             throw new ResourceNotFoundException("Usuário " + id + " não encontrado");
+        }
+
+        Associado associado = associadoRepository.searchAssociadoByUserId(id);
+
+        if(associado != null) {
+            Carteirinha carteirinha = carteirinhaRepository.searchCarteirinhaByUserId(id);
+            List<Reserva> reservas = reservaRepository.findAll();
+
+            if(carteirinha != null) {
+                carteirinhaRepository.delete(carteirinha);
+            }
+
+            if(!reservas.isEmpty()) {
+                for (Reserva reserva : reservas) {
+                    if(reserva.getSolicitanteId() == id) {
+                        reserva.setAtivo(false);
+                        reservaRepository.save(reserva);
+                    }
+                }
+            }
+
+            associadoRepository.delete(associado);
+        }
+
+        Funcionario funcionario = funcionarioRepository.searchFunciorioByUserId(id);
+
+        if(funcionario != null) {
+            funcionarioRepository.delete(funcionario);
         }
 
         userRepository.delete(remove.get());

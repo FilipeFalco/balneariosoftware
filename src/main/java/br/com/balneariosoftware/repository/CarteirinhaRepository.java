@@ -1,5 +1,6 @@
 package br.com.balneariosoftware.repository;
 
+import br.com.balneariosoftware.model.Associado;
 import br.com.balneariosoftware.model.Carteirinha;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -21,4 +22,7 @@ public interface CarteirinhaRepository extends JpaRepository<Carteirinha, Long> 
 
     @Query("SELECT c FROM Carteirinha c WHERE c.ativo = true")
     List<Carteirinha> listAllAtivo();
+
+    @Query("SELECT c FROM Carteirinha c where c.usuarioId = ?1")
+    Carteirinha searchCarteirinhaByUserId(Long id);
 }

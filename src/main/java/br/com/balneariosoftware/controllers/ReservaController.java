@@ -1,6 +1,7 @@
 package br.com.balneariosoftware.controllers;
 
 import br.com.balneariosoftware.exception.*;
+import br.com.balneariosoftware.model.Associado;
 import br.com.balneariosoftware.model.Reserva;
 import br.com.balneariosoftware.repository.AssociadoRepository;
 import br.com.balneariosoftware.repository.FuncionarioRepository;
@@ -48,7 +49,7 @@ public class ReservaController {
         }
 
         if(reservaRepository.localReservado(reserva.getLocal(), reserva.getData_reservada())) {
-            throw new DateAlreadyReserved("Este loca, nesta data, já esta reservada!");
+            throw new DateAlreadyReserved("Este local, nesta data, já esta reservada!");
         }
 
         if(reserva.getData_reservada() == null) {
@@ -62,7 +63,7 @@ public class ReservaController {
         if(reserva.getSolicitanteId() == null) {
             throw new ResourceRequired("Usuário é obrigatório!");
         } else {
-            if (associadoRepository.userJaAssociado(reserva.getSolicitanteId())) {
+            if (!associadoRepository.userJaAssociado(reserva.getSolicitanteId())) {
                 throw new ResourceNotFoundException("Associado não encontrado!");
             }
         }
@@ -72,6 +73,8 @@ public class ReservaController {
         } else {
             if(!funcionarioRepository.funcionarioExistsByUserId(reserva.getAutorizadorId())) {
                 throw new ResourceNotFoundException("Funcionário não encontrado!");
+            } else if(!funcionarioRepository.funcionarioExistsByUserIdAndAutorizador(reserva.getAutorizadorId())) {
+                throw new ResourceNotFoundException("Este funcionário não tem acesso para realizar liberações de eventos");
             }
         }
 

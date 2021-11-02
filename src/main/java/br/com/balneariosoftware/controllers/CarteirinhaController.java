@@ -48,10 +48,6 @@ public class CarteirinhaController {
 
         String idCarteirinha = String.format("%010d", new BigInteger(UUID.randomUUID().toString().replace("-", ""), 16));
 
-        if(carteirinhaRepository.validaIdCarteirinha(Long.parseLong(idCarteirinha))) {
-            throw new APIException("Erro inesperado");
-        }
-
         carteirinha.setId_carteirinha(idCarteirinha);
         return this.carteirinhaRepository.save(carteirinha);
     }

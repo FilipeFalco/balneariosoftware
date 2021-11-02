@@ -4,16 +4,17 @@ import br.com.balneariosoftware.exception.IsFuncionario;
 import br.com.balneariosoftware.exception.ResourceAlreadyExist;
 import br.com.balneariosoftware.exception.ResourceNotFoundException;
 import br.com.balneariosoftware.exception.ValueOnInsertNotFound;
-import br.com.balneariosoftware.model.Associado;
-import br.com.balneariosoftware.model.Funcionario;
-import br.com.balneariosoftware.model.User;
+import br.com.balneariosoftware.model.*;
 import br.com.balneariosoftware.repository.AssociadoRepository;
+import br.com.balneariosoftware.repository.CarteirinhaRepository;
+import br.com.balneariosoftware.repository.ReservaRepository;
 import br.com.balneariosoftware.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -25,6 +26,12 @@ public class AssociadoController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CarteirinhaRepository carteirinhaRepository;
+
+    @Autowired
+    private ReservaRepository reservaRepository;
 
     @GetMapping("/{id}")
     public Associado associado(@PathVariable("id") Long id) {
@@ -67,6 +74,22 @@ public class AssociadoController {
 
         if(remove.isEmpty()) {
             throw new ResourceNotFoundException("Usuário " + id + " não encontrado");
+        }
+
+        Carteirinha carteirinha = carteirinhaRepository.searchCarteirinhaByUserId(id);
+        List<Reserva> reservas = reservaRepository.findAll();
+
+        if(carteirinha != null) {
+            carteirinhaRepository.delete(carteirinha);
+        }
+
+        if(!reservas.isEmpty()) {
+            for (Reserva reserva : reservas) {
+                if(Objects.equals(reserva.getSolicitanteId(), id)) {
+                    reserva.setAtivo(false);
+                    reservaRepository.save(reserva);
+                }
+            }
         }
 
         Optional<User> removeUser = userRepository.findById(remove.get().getUsuarioId());

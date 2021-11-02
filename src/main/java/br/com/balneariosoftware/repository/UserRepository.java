@@ -10,4 +10,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE u.cpf = ?1")
     User findCpf(String cpf);
+
+    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM User u where u.email like ?1")
+    Boolean searchEmail(String email);
+
+    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM User u where u.username like ?1")
+    Boolean searchUsername(String login);
 }

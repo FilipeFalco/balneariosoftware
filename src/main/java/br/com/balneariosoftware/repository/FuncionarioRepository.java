@@ -13,4 +13,7 @@ public interface FuncionarioRepository extends JpaRepository<Funcionario, Long> 
 
     @Query("SELECT CASE WHEN COUNT(f) > 0 THEN true ELSE false END FROM Funcionario f where f.usuarioId = ?1")
     Boolean funcionarioExistsByUserId(Long id);
+
+    @Query("SELECT CASE WHEN COUNT(f) > 0 THEN true ELSE false END FROM Funcionario f where f.usuarioId = ?1 and f.liberador_acesso = true")
+    Boolean funcionarioExistsByUserIdAndAutorizador(Long id);
 }
