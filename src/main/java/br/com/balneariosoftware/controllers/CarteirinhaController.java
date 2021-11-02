@@ -70,13 +70,13 @@ public class CarteirinhaController {
     @PostMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void removeUser(@PathVariable("id") Long id) {
-        Carteirinha remove = carteirinhaRepository.getById(id);
+        Optional<Carteirinha> remove = carteirinhaRepository.findById(id);
 
-        if(remove.getId() == null) {
+        if(remove.isEmpty()) {
             throw new ResourceNotFoundException("Usuário " + id + " não encontrado");
         }
 
-        remove.setAtivo(false);
-        carteirinhaRepository.save(remove);
+        remove.get().setAtivo(false);
+        carteirinhaRepository.save(remove.get());
     }
 }
