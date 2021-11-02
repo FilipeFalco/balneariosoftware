@@ -5,6 +5,7 @@ import br.com.balneariosoftware.model.Carteirinha;
 import br.com.balneariosoftware.model.Funcionario;
 import br.com.balneariosoftware.model.User;
 import br.com.balneariosoftware.repository.CarteirinhaRepository;
+import br.com.balneariosoftware.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,9 @@ public class CarteirinhaController {
     @Autowired
     private CarteirinhaRepository carteirinhaRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @GetMapping("/{id}")
     public Carteirinha carteirinha(@PathVariable("id") Long id) {
         Optional<Carteirinha> carteirinhaFind = this.carteirinhaRepository.findById(id);
@@ -36,6 +40,12 @@ public class CarteirinhaController {
     public Carteirinha carteirinha(@RequestBody Carteirinha carteirinha) {
         if(carteirinha.getUsuarioId() == null) {
             throw new ResourceRequired("Usuário é obrigatório");
+        }
+
+        Optional<User> user = userRepository.findById(carteirinha.getUsuarioId());
+
+        if(user.isEmpty()) {
+            throw new ResourceNotFoundException("Usuário não encontrado");
         }
 
         if(carteirinhaRepository.associadoJaPossuiCarteirinha(carteirinha.getUsuarioId())) {
